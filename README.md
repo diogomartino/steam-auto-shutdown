@@ -14,5 +14,7 @@ It uses network usage to measure if you are downloading or not. This will only b
 
 ### v1.1 - 25/04/2017
 > Fixed a bug where some network cards were not detected correctly
+
 > Improved program stability
+
 > Minor optimizations
