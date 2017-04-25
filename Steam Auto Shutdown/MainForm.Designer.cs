@@ -85,6 +85,7 @@
             this.futureButton2 = new FutureButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.futureButton1 = new FutureButton();
+            this.label1 = new System.Windows.Forms.Label();
             this.futureTheme1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -146,6 +147,7 @@
         bloom11,
         bloom12,
         bloom13};
+            this.futureTheme1.Controls.Add(this.label1);
             this.futureTheme1.Controls.Add(this.futureButton3);
             this.futureTheme1.Controls.Add(this.statusStrip1);
             this.futureTheme1.Controls.Add(this.futureButton2);
@@ -163,7 +165,7 @@
             this.futureTheme1.Size = new System.Drawing.Size(500, 256);
             this.futureTheme1.SmartBounds = true;
             this.futureTheme1.TabIndex = 0;
-            this.futureTheme1.Text = "Steam Auto Shutdown v1.0";
+            this.futureTheme1.Text = "Steam Auto Shutdown v1.1";
             this.futureTheme1.TransparencyKey = System.Drawing.Color.Empty;
             // 
             // futureButton3
@@ -337,6 +339,17 @@
             this.futureButton1.Transparent = false;
             this.futureButton1.Click += new System.EventHandler(this.futureButton1_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Verdana", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(456, 224);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 10);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "by bruxo";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -367,6 +380,7 @@
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private FutureButton futureButton3;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

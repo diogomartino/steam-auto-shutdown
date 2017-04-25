@@ -9,7 +9,7 @@ namespace Steam_Auto_Shutdown
     {
         private static bool message = false;
         private static int selectedOption = 0;
-        private static string networkCard = null;
+        private static string networkCard = string.Empty;
         private static int noDownloadCounter = 0;
 
         public Form1()
@@ -31,18 +31,14 @@ namespace Steam_Auto_Shutdown
             {
                 toolStripStatusLabel1.Text = "Updating system status...";
                 futureButton1.Text = "Disable auto shutdown";
-
                 timer1.Start();
-
                 selectedOption = 1;
             }
             else
             {
                 futureButton1.Text = "Shutdown when downloads are finished";
                 toolStripStatusLabel1.Text = "Waiting...";
-
                 timer1.Stop();
-
                 selectedOption = 0;
                 noDownloadCounter = 0;
             }
@@ -52,7 +48,6 @@ namespace Steam_Auto_Shutdown
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-
             bool cursorNotInBar = Screen.GetWorkingArea(this).Contains(Cursor.Position);
 
             if(this.WindowState == FormWindowState.Minimized && cursorNotInBar)
@@ -67,7 +62,6 @@ namespace Steam_Auto_Shutdown
                     notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
                     notifyIcon1.BalloonTipTitle = "Alert!";
                     notifyIcon1.ShowBalloonTip(500);
-
                     message = true;
                 }
             }
@@ -76,7 +70,6 @@ namespace Steam_Auto_Shutdown
         private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
         {
             this.WindowState = FormWindowState.Normal;
-
             this.ShowInTaskbar = true;
             notifyIcon1.Visible = false;
             this.Visible = true;
@@ -112,13 +105,11 @@ namespace Steam_Auto_Shutdown
         {
             Process.Start("shutdown", "/s /t 15");
 
-            DialogResult result = MessageBox.Show("Your computer is shutting down! Do you want to CANCEL the shutdown?", "Confirm", MessageBoxButtons.YesNo);
+            DialogResult result = MessageBox.Show("Your computer is shutting down in 15 seconds! Do you want to CANCEL the shutdown?", "Confirm", MessageBoxButtons.YesNo);
 
             if (result == DialogResult.Yes)
-            {
                 Process.Start("shutdown", "/a");
-            }
-
+            
             Application.Exit();
         }
 
@@ -152,26 +143,23 @@ namespace Steam_Auto_Shutdown
             PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
             String[] instancename = category.GetInstanceNames();
 
+            bool found = false;
+
+            LOOP:
             foreach (string name in instancename)
             {
-                YOLO:
+                double utilization = GetNetworkUtilization(name.TrimStart().TrimEnd());
 
-                int i = 0;
-                double s = GetNetworkUtilization(name);
-
-                if(s == 0 && i < 3) // try 3 times
-                {
-                    Thread.Sleep(1000);
-
-                    i++;
-                    goto YOLO;
-                }
-                else if(s > 0)
+                if(utilization != 0)
                 {
                     networkCard = name;
+                    found = true;
                     break;
                 }
             }
+
+            if (!found)
+                goto LOOP;
         }
     }
 }
