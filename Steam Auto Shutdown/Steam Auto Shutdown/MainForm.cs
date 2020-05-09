@@ -62,7 +62,7 @@ namespace Steam_Auto_Shutdown
                 }
                 else
                 {
-                    Environment.Exit(-1);
+                    Environment.FailFast("Killed by choice");
                 }
             }
             catch { }
@@ -225,7 +225,7 @@ namespace Steam_Auto_Shutdown
 
         private void MetroButton3_Click(object sender, EventArgs e)
         {
-            Environment.Exit(-1);
+            Environment.FailFast("Killed by choice");
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
