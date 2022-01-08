@@ -1,13 +1,10 @@
-﻿using MetroFramework.Controls;
-using MetroFramework.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -16,36 +13,204 @@ using System.Windows.Forms;
 
 namespace Steam_Auto_Shutdown
 {
-    struct IO_COUNTERS
+    public partial class MainForm : Form
     {
-        public ulong ReadOperationCount;
-        public ulong WriteOperationCount;
-        public ulong OtherOperationCount;
-        public ulong ReadTransferCount;
-        public ulong WriteTransferCount;
-        public ulong OtherTransferCount;
-    }
+        struct IO_COUNTERS
+        {
+            public ulong ReadOperationCount;
+            public ulong WriteOperationCount;
+            public ulong OtherOperationCount;
+            public ulong ReadTransferCount;
+            public ulong WriteTransferCount;
+            public ulong OtherTransferCount;
+        }
 
-    public partial class MainForm : MetroForm
-    {
         [DllImport(@"kernel32.dll", SetLastError = true)]
         static extern bool GetProcessIoCounters(IntPtr hProcess, out IO_COUNTERS counters);
 
-        private static string networkCardName = string.Empty;
-        private static bool steamUsingDisk = false;
-        private static bool message = false;
+        private string networkCardName = string.Empty;
+        private bool isSteamUsingDisk = false;
+        private bool monitoringStatus = false;
+        private bool messageShown = false;
+
+        private bool dragging = false;
+        private Point dragCursorPoint;
+        private Point dragFormPoint;
 
         public MainForm()
         {
             InitializeComponent();
+            LoadApp();
+        }
 
-            Thread t = new Thread(() => GetUsedNetworkCard(networkLabel));
-            Thread control = new Thread(() => Control(speedLabel, metroToggle1, statusLabel, steamStatusLabel, diskCheckbox));
-            Thread diskM = new Thread(() => MonitorSteamDiskUsage());
+        private void LoadApp()
+        {
+            Thread cardThread = new Thread(() => LoadNetworkCardName());
+            Thread diskThread = new Thread(() => MonitorSteamDiskUsage());
+            Thread monitorThread = new Thread(() => MonitorAutoShutdown());
 
-            t.Start();
-            control.Start();
-            diskM.Start();
+            cardThread.Start();
+            diskThread.Start();
+            monitorThread.Start();
+        }
+
+        private int GetShutdownSeconds()
+        {
+            int selectedIndex = 0;
+
+            shutdownAfterDropdown.Invoke((MethodInvoker)delegate
+            {
+                selectedIndex = shutdownAfterDropdown.SelectedIndex;
+            });
+
+            switch (selectedIndex)
+            {
+                case 0: return 10;
+                case 1: return 30;
+                case 2: return 60;
+                case 3: return 300;
+                default: return 30;
+            }
+        }
+
+        private int GetIdleTresholdSeconds()
+        {
+            int selectedIndex = 0;
+
+            idleTresholdDropdown.Invoke((MethodInvoker)delegate
+            {
+                selectedIndex = idleTresholdDropdown.SelectedIndex;
+            });
+
+            switch (selectedIndex)
+            {
+                case 0: return 3;
+                case 1: return 5;
+                case 2: return 10;
+                case 3: return 30;
+                default: return 3;
+            }
+        }
+
+        private int GetSpeedTresholdBytes()
+        {
+            int selectedIndex = 0;
+
+            speedTresholdDropdown.Invoke((MethodInvoker)delegate
+            {
+                selectedIndex = speedTresholdDropdown.SelectedIndex;
+            });
+
+            switch (selectedIndex)
+            {
+                case 0: return 20 * 1000;
+                case 1: return 50 * 1000;
+                case 2: return 100 * 1000;
+                case 3: return 200 * 1000;
+                case 4: return 400 * 1000;
+                case 5: return 600 * 1000;
+                case 6: return 800 * 1000;
+                case 7: return 1000 * 1000;
+                default: return 200 * 1000;
+            }
+        }
+
+        private void MonitorAutoShutdown()
+        {
+            int idleCounter = 0;
+            int idleTresholdCounter = 0;
+
+            while (true)
+            {
+                int shutdownAfterSeconds = GetShutdownSeconds();
+                int speedTreshold = GetSpeedTresholdBytes();
+                int idleTreshold = GetIdleTresholdSeconds();
+
+                try
+                {
+                    if (!string.IsNullOrEmpty(networkCardName))
+                    {
+                        double bytesUsage = GetNetworkUtilization(networkCardName);
+
+                        networkSpeedLabel.Invoke((MethodInvoker)delegate
+                        {
+                            networkSpeedLabel.Text = (((bytesUsage / 1024f) / 1024f).ToString("####0.00") + " MB/s").Replace(",", ".");
+
+                            if (diskDetectionCheckbox.Checked)
+                            {
+                                diskActivityLabel.Text = "Steam Using Disk: " + (isSteamUsingDisk ? "Yes" : "No");
+                            }
+                            else
+                            {
+                                diskActivityLabel.Text = "Steam Using Disk: Disabled";
+                            }
+                        });
+
+                        if (monitoringStatus)
+                        {
+                            if (bytesUsage < speedTreshold)
+                            {
+                                if (!diskDetectionCheckbox.Checked)
+                                {
+                                    idleCounter++;
+                                }
+                                else if (diskDetectionCheckbox.Checked && !isSteamUsingDisk)
+                                {
+                                    idleCounter++;
+                                }
+
+                                idleTresholdCounter = 0;
+                            }
+                            else
+                            {
+                                idleTresholdCounter++;
+
+                                if (idleTresholdCounter > idleTreshold)
+                                {
+                                    idleCounter = 0;
+                                }
+                            }
+
+                            if (idleCounter > shutdownAfterSeconds)
+                            {
+                                idleCounter = 0;
+                                Shutdown();
+                                ToggleStatus();
+                            }
+
+                            if(idleCounter == 0)
+                            {
+                                statusLabel.Invoke((MethodInvoker)delegate
+                                {
+                                    statusLabel.Text = "Downloading...";
+                                });
+                            }
+                            else
+                            {
+                                statusLabel.Invoke((MethodInvoker)delegate
+                                {
+                                    statusLabel.Text = String.Format("Shutting down in {0} seconds", shutdownAfterSeconds - idleCounter);
+                                });
+                            }
+                        }
+                        else
+                        {
+                            idleCounter = 0;
+                            idleTresholdCounter = 0;
+
+                            statusLabel.Invoke((MethodInvoker)delegate
+                            {
+                                statusLabel.Text = "";
+                            });
+                        }
+                    }
+                }
+                catch { }
+                finally
+                {
+                    Thread.Sleep(1000);
+                }
+            }
         }
 
         private static void Shutdown()
@@ -54,7 +219,7 @@ namespace Steam_Auto_Shutdown
             {
                 Process.Start("shutdown", "/s /t 15");
 
-                DialogResult result = MessageBox.Show("Your computer is shutting down in 15 seconds! Do you want to CANCEL the shutdown? Press YES to ABORT THE SHUTDOWN.", "Confirm", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBox.Show("Your computer is shutting down in 15 seconds! Do you want to CANCEL the shutdown? Press YES to ABORT THE SHUTDOWN. Press NO to SHUTDOWN IMEDIATELY.", "Confirm", MessageBoxButtons.YesNo);
 
                 if (result == DialogResult.Yes)
                 {
@@ -62,121 +227,23 @@ namespace Steam_Auto_Shutdown
                 }
                 else
                 {
-                    Environment.FailFast("Killed by choice");
+                    Process.Start("shutdown", "/s");
                 }
             }
             catch { }
         }
 
-        private static void Control(MetroLabel speed, MetroToggle toggle, MetroLabel status, MetroLabel steam, MetroCheckBox disk)
+        private void ToggleStatus()
         {
-            int idleCounter = 0;
-            int idleTreshold = 0;
+            monitoringStatus = !monitoringStatus;
 
-            while (true)
+            toggleStatusLabel.Invoke((MethodInvoker)delegate
             {
-                try
-                {
-                    if (!string.IsNullOrEmpty(networkCardName))
-                    {
-                        double usage = GetNetworkUtilization(networkCardName);
-
-                        if (toggle.Checked)
-                        {
-                            if (usage < 10000)
-                            {
-                                if(!disk.Checked)
-                                {
-                                    idleCounter++;
-                                }
-                                else if(disk.Checked && !steamUsingDisk)
-                                {
-                                    idleCounter++;
-                                }
-                            }
-                            else
-                            {
-                                idleTreshold++;
-
-                                if (idleTreshold > 6)
-                                {
-                                    idleCounter = 0;
-                                }
-                            }
-
-                            if (idleCounter > 240)
-                            {
-                                idleCounter = 0;
-                                Shutdown();
-                            }
-
-                            status.Invoke((MethodInvoker)delegate
-                            {
-                                status.Text = "Idle Detector: " + idleCounter + " / 240";
-                            });
-                        }
-                        else
-                        {
-                            idleCounter = 0;
-                            idleTreshold = 0;
-                            status.Invoke((MethodInvoker)delegate
-                            {
-                                status.Text = "";
-                            });
-                        }
-
-                        speed.Invoke((MethodInvoker)delegate
-                        {
-                            speed.Text = ((usage / 1024f) / 1024f).ToString("####0.00") + " MB/S";
-                            
-                            if(disk.Checked)
-                            {
-                                steam.Text = "Disk Activity: " + (steamUsingDisk ? "Yes" : "No");
-                            }
-                            else
-                            {
-                                steam.Text = "";
-                            }
-                        });
-                    }
-                }
-                catch { }
-                finally
-                {
-                    Thread.Sleep(500);
-                }
-            }
+                toggleStatusLabel.Text = monitoringStatus ? "ON" : "OFF";
+            });
         }
 
-        public static bool MonitorSteamDiskUsage()
-        {
-            ulong lastValue = 0;
-
-            while (true)
-            {
-                try
-                {
-                    if (GetProcessIoCounters(Process.GetProcessesByName("steam").FirstOrDefault().Handle, out IO_COUNTERS counters))
-                    {
-                        if (lastValue != 0 && counters.WriteTransferCount != lastValue && counters.WriteTransferCount - lastValue > 100000)
-                        {
-                            steamUsingDisk = true;
-                        }
-                        else
-                        {
-                            steamUsingDisk = false;
-                        }
-
-                        lastValue = counters.WriteTransferCount;
-                    }
-
-                    Thread.Sleep(500);
-                }
-                catch { }
-            }
-        }
-
-        private static double GetNetworkUtilization(string networkCard)
+        private double GetNetworkUtilization(string networkCard)
         {
             PerformanceCounter dataReceivedCounter = new PerformanceCounter("Network Interface", "Bytes Received/sec", networkCard);
 
@@ -192,7 +259,7 @@ namespace Steam_Auto_Shutdown
             return dataReceived;
         }
 
-        private static void GetUsedNetworkCard(MetroLabel label)
+        private void LoadNetworkCardName()
         {
             PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
             string[] instancename = category.GetInstanceNames();
@@ -207,9 +274,9 @@ namespace Steam_Auto_Shutdown
                     {
                         networkCardName = name;
 
-                        label.Invoke((MethodInvoker)delegate
+                        networkCardLabel.Invoke((MethodInvoker)delegate
                         {
-                            label.Text = name;
+                            networkCardLabel.Text = networkCardName;
                         });
 
                         break;
@@ -218,48 +285,115 @@ namespace Steam_Auto_Shutdown
             }
         }
 
-        private void MetroButton1_Click(object sender, EventArgs e)
+        private void MonitorSteamDiskUsage()
         {
-            metroToggle1.Checked = !metroToggle1.Checked;
+            ulong lastValue = 0;
+
+            while (true)
+            {
+                try
+                {
+                    if (GetProcessIoCounters(Process.GetProcessesByName("steam").FirstOrDefault().Handle, out IO_COUNTERS counters))
+                    {
+                        if (lastValue != 0 && counters.WriteTransferCount != lastValue && counters.WriteTransferCount - lastValue > 100000)
+                        {
+                            isSteamUsingDisk = true;
+                        }
+                        else
+                        {
+                            isSteamUsingDisk = false;
+                        }
+
+                        lastValue = counters.WriteTransferCount;
+                    }
+
+                    networkCardLabel.Invoke((MethodInvoker)delegate
+                    {
+                        networkCardLabel.Text = isSteamUsingDisk ? "Yes" : "No";
+                    });
+
+                    Thread.Sleep(2000);
+                }
+                catch { }
+            }
         }
 
-        private void MetroButton3_Click(object sender, EventArgs e)
+        private void MainForm_MouseDown(object sender, MouseEventArgs e)
         {
-            Environment.FailFast("Killed by choice");
+            dragging = true;
+            dragCursorPoint = Cursor.Position;
+            dragFormPoint = this.Location;
+        }
+
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (dragging)
+            {
+                Point dif = Point.Subtract(Cursor.Position, new Size(dragCursorPoint));
+                this.Location = Point.Add(dragFormPoint, new Size(dif));
+            }
+        }
+
+        private void MainForm_MouseUp(object sender, MouseEventArgs e)
+        {
+            dragging = false;
+        }
+
+        private void materialButton1_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void materialButton2_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(-1);
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
         {
-            bool cursorNotInBar = Screen.GetWorkingArea(this).Contains(Cursor.Position);
-
-            if (this.WindowState == FormWindowState.Minimized && cursorNotInBar)
+            if (this.WindowState == FormWindowState.Minimized)
             {
                 this.ShowInTaskbar = false;
                 notifyIcon1.Visible = true;
                 this.Hide();
 
-                if (message == false)
+                if (messageShown == false)
                 {
                     notifyIcon1.BalloonTipText = "Hey! Steam Auto Shutdown is still running here, don't worry!";
                     notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
                     notifyIcon1.BalloonTipTitle = "Alert!";
                     notifyIcon1.ShowBalloonTip(500);
-                    message = true;
+                    messageShown = true;
                 }
             }
         }
 
-        private void MetroButton2_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
-
-        private void NotifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.WindowState = FormWindowState.Normal;
             this.ShowInTaskbar = true;
             notifyIcon1.Visible = false;
             this.Visible = true;
+        }
+
+        private void materialLabel6_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/bruxo00");
+        }
+
+        private void toggleButton_Click(object sender, EventArgs e)
+        {
+            ToggleStatus();
+        }
+
+        private void materialLabel7_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/bruxo00/steam-auto-shutdown/wiki/Help");
+        }
+
+        private void materialLabel8_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/bruxo00/steam-auto-shutdown");
         }
     }
 }
