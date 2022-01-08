@@ -218,9 +218,9 @@ namespace Steam_Auto_Shutdown
             this.materialLabel3.Location = new System.Drawing.Point(223, 150);
             this.materialLabel3.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.materialLabel3.Name = "materialLabel3";
-            this.materialLabel3.Size = new System.Drawing.Size(93, 17);
+            this.materialLabel3.Size = new System.Drawing.Size(101, 17);
             this.materialLabel3.TabIndex = 24;
-            this.materialLabel3.Text = "Speed treshold";
+            this.materialLabel3.Text = "Speed threshold";
             // 
             // speedTresholdDropdown
             // 
@@ -264,9 +264,9 @@ namespace Steam_Auto_Shutdown
             this.materialLabel4.Location = new System.Drawing.Point(420, 150);
             this.materialLabel4.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.materialLabel4.Name = "materialLabel4";
-            this.materialLabel4.Size = new System.Drawing.Size(77, 17);
+            this.materialLabel4.Size = new System.Drawing.Size(85, 17);
             this.materialLabel4.TabIndex = 26;
-            this.materialLabel4.Text = "Idle treshold";
+            this.materialLabel4.Text = "Idle threshold";
             // 
             // idleTresholdDropdown
             // 
