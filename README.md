@@ -22,7 +22,7 @@ It uses network usage to check if you are downloading something. This will only 
 - Improved stability
 - Fixed idle counter bug
 - Fixed app not exiting completely bug
-- Added new user controls so he can tweak for is own network
+- Added new user controls so he can tweak for his own network
 
 ### v2.0 - 09/05/2020
 - Code remake
