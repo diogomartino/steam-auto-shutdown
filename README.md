@@ -1,7 +1,7 @@
 # >> Steam Auto Shutdown <<
 This program shutdowns your PC when your steam downloads finish. Actually, it shutdowns your computer if it doesn't detect any network usage for some time, so you can use it with any programs, not only with steam.
 
-![Print](https://i.imgur.com/LUDUHQg.png)
+![Print](https://i.imgur.com/MDIgRVX.png)
 
 # Instructions
 - Start your steam download.
