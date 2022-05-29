@@ -421,7 +421,7 @@ namespace Steam_Auto_Shutdown
             this.materialLabel8.Name = "materialLabel8";
             this.materialLabel8.Size = new System.Drawing.Size(21, 13);
             this.materialLabel8.TabIndex = 34;
-            this.materialLabel8.Text = "v3.0";
+            this.materialLabel8.Text = "v4.0";
             this.materialLabel8.Click += new System.EventHandler(this.materialLabel8_Click);
             // 
             // MainForm
