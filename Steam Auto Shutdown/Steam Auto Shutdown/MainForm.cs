@@ -45,13 +45,20 @@ namespace Steam_Auto_Shutdown
 
         private void LoadApp()
         {
-            Thread cardThread = new Thread(() => LoadNetworkCardName());
-            Thread diskThread = new Thread(() => MonitorSteamDiskUsage());
-            Thread monitorThread = new Thread(() => MonitorAutoShutdown());
+            try
+            {
+                Thread cardThread = new Thread(() => LoadNetworkCardName());
+                Thread diskThread = new Thread(() => MonitorSteamDiskUsage());
+                Thread monitorThread = new Thread(() => MonitorAutoShutdown());
 
-            cardThread.Start();
-            diskThread.Start();
-            monitorThread.Start();
+                cardThread.Start();
+                diskThread.Start();
+                monitorThread.Start();
+            }
+            catch (Exception ex)
+            {
+                Util.LogToFile(ex.ToString());
+            }
         }
 
         private int GetShutdownSeconds()
@@ -122,12 +129,12 @@ namespace Steam_Auto_Shutdown
 
             while (true)
             {
-                int shutdownAfterSeconds = GetShutdownSeconds();
-                int speedTreshold = GetSpeedTresholdBytes();
-                int idleTreshold = GetIdleTresholdSeconds();
-
                 try
                 {
+                    int shutdownAfterSeconds = GetShutdownSeconds();
+                    int speedTreshold = GetSpeedTresholdBytes();
+                    int idleTreshold = GetIdleTresholdSeconds();
+
                     if (!string.IsNullOrEmpty(networkCardName))
                     {
                         double bytesUsage = GetNetworkUtilization(networkCardName);
@@ -178,7 +185,7 @@ namespace Steam_Auto_Shutdown
                                 ToggleStatus();
                             }
 
-                            if(idleCounter == 0)
+                            if (idleCounter == 0)
                             {
                                 statusLabel.Invoke((MethodInvoker)delegate
                                 {
@@ -205,7 +212,10 @@ namespace Steam_Auto_Shutdown
                         }
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Util.LogToFile(ex.ToString());
+                }
                 finally
                 {
                     Thread.Sleep(1000);
@@ -245,43 +255,59 @@ namespace Steam_Auto_Shutdown
 
         private double GetNetworkUtilization(string networkCard)
         {
-            PerformanceCounter dataReceivedCounter = new PerformanceCounter("Network Interface", "Bytes Received/sec", networkCard);
-
-            float receiveSum = 0;
-
-            for (int index = 0; index < 50; index++)
+            try
             {
-                receiveSum += dataReceivedCounter.NextValue();
+                PerformanceCounter dataReceivedCounter = new PerformanceCounter("Network Interface", "Bytes Received/sec", networkCard);
+
+                float receiveSum = 0;
+
+                for (int index = 0; index < 50; index++)
+                {
+                    receiveSum += dataReceivedCounter.NextValue();
+                }
+
+                float dataReceived = receiveSum / 50;
+
+                return dataReceived;
+            }
+            catch (Exception ex)
+            {
+                Util.LogToFile(ex.ToString());
             }
 
-            float dataReceived = receiveSum / 50;
-
-            return dataReceived;
+            return 0;
         }
 
         private void LoadNetworkCardName()
         {
-            PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
-            string[] instancename = category.GetInstanceNames();
-
-            while (string.IsNullOrEmpty(networkCardName))
+            try
             {
-                foreach (string name in instancename)
+                PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
+                string[] instancename = category.GetInstanceNames();
+
+                while (string.IsNullOrEmpty(networkCardName))
                 {
-                    double utilization = GetNetworkUtilization(name.TrimStart().TrimEnd());
-
-                    if (utilization != 0)
+                    foreach (string name in instancename)
                     {
-                        networkCardName = name;
+                        double utilization = GetNetworkUtilization(name.TrimStart().TrimEnd());
 
-                        networkCardLabel.Invoke((MethodInvoker)delegate
+                        if (utilization != 0)
                         {
-                            networkCardLabel.Text = networkCardName;
-                        });
+                            networkCardName = name;
 
-                        break;
+                            networkCardLabel.Invoke((MethodInvoker)delegate
+                            {
+                                networkCardLabel.Text = networkCardName;
+                            });
+
+                            break;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Util.LogToFile(ex.ToString());
             }
         }
 
@@ -307,14 +333,12 @@ namespace Steam_Auto_Shutdown
                         lastValue = counters.WriteTransferCount;
                     }
 
-                    networkCardLabel.Invoke((MethodInvoker)delegate
-                    {
-                        networkCardLabel.Text = isSteamUsingDisk ? "Yes" : "No";
-                    });
-
                     Thread.Sleep(2000);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Util.LogToFile(ex.ToString());
+                }
             }
         }
 
