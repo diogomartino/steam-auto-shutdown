@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>steam_auto_shutdown.ico</ApplicationIcon>
+    <ApplicationIcon>steam_auto_shutdown_v2.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
@@ -226,10 +226,8 @@
     <None Include="Resources\steam-icon-steam-icon-11553449126dlqnjdi4pi.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Steam_icon_logo.svg.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="steam_auto_shutdown.ico" />
+    <Content Include="steam_auto_shutdown_v2.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

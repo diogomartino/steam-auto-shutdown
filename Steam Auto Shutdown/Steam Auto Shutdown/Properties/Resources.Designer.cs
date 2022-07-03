@@ -63,16 +63,6 @@ namespace Steam_Auto_Shutdown.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Steam_icon_logo_svg {
-            get {
-                object obj = ResourceManager.GetObject("Steam_icon_logo.svg", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap steam_icon_steam_icon_11553449126dlqnjdi4pi {
             get {
                 object obj = ResourceManager.GetObject("steam-icon-steam-icon-11553449126dlqnjdi4pi", resourceCulture);

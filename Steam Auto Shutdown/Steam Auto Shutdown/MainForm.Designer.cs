@@ -48,12 +48,12 @@ namespace Steam_Auto_Shutdown
             this.materialButton1 = new ReaLTaiizor.Controls.MaterialButton();
             this.materialButton2 = new ReaLTaiizor.Controls.MaterialButton();
             this.materialLabel5 = new ReaLTaiizor.Controls.MaterialLabel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.materialDivider1 = new ReaLTaiizor.Controls.MaterialDivider();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.materialLabel6 = new ReaLTaiizor.Controls.MaterialLabel();
             this.materialLabel7 = new ReaLTaiizor.Controls.MaterialLabel();
             this.materialLabel8 = new ReaLTaiizor.Controls.MaterialLabel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -350,16 +350,6 @@ namespace Steam_Auto_Shutdown
             this.materialLabel5.TabIndex = 29;
             this.materialLabel5.Text = "Steam Auto Shutdown";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::Steam_Auto_Shutdown.Properties.Resources.steam_icon_steam_icon_11553449126dlqnjdi4pi;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(45, 41);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 30;
-            this.pictureBox1.TabStop = false;
-            // 
             // materialDivider1
             // 
             this.materialDivider1.BackColor = System.Drawing.Color.Blue;
@@ -423,6 +413,16 @@ namespace Steam_Auto_Shutdown
             this.materialLabel8.TabIndex = 34;
             this.materialLabel8.Text = "v4.0";
             this.materialLabel8.Click += new System.EventHandler(this.materialLabel8_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Steam_Auto_Shutdown.Properties.Resources.steam_icon_steam_icon_11553449126dlqnjdi4pi;
+            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(45, 41);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 30;
+            this.pictureBox1.TabStop = false;
             // 
             // MainForm
             // 
