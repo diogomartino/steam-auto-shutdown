@@ -17,6 +17,15 @@ It uses network usage to check if you are downloading something. This will only 
 
 # Changelog
 
+### v6.0 - Unreleased
+- Fixed window title (thanks to MaartenDeBrandt)
+- Added option to hibernate instead of shutdown
+- Fixed version saying v4.0 instead of v5.0 in last release (now v6.0)
+
+### v5.0 - 03/07/2022
+- [Changed stuff to avoid false positive detection by antivirus (🤦)](https://github.com/bruxo00/steam-auto-shutdown/issues/11)
+- Added message when there is an error
+
 ### v3.0 - 08/01/2022
 - Redesign
 - Improved stability
