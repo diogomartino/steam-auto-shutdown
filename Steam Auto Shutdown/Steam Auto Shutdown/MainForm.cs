@@ -234,8 +234,6 @@ namespace Steam_Auto_Shutdown
                 {
                     bool cancelled = false;
 
-                    DialogResult result = MessageBox.Show("Your computer is hibernating in 15 seconds! Do you want to CANCEL the hibernation? Press YES to ABORT THE HIBERNATION. Press NO to HIBERNATE IMEDIATELY.", "Confirm", MessageBoxButtons.YesNo);
-
                     Task.Delay(new TimeSpan(0, 0, 15)).ContinueWith((task) => {
                         if (cancelled)
                         {
@@ -244,6 +242,8 @@ namespace Steam_Auto_Shutdown
 
                         Application.SetSuspendState(PowerState.Hibernate, true, true);
                     });
+
+                    DialogResult result = MessageBox.Show("Your computer is hibernating in 15 seconds! Do you want to CANCEL the hibernation? Press YES to ABORT THE HIBERNATION. Press NO to HIBERNATE IMEDIATELY.", "Confirm", MessageBoxButtons.YesNo);
 
                     if (result == DialogResult.Yes)
                     {
