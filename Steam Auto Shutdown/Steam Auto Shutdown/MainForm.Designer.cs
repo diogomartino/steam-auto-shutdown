@@ -1,4 +1,4 @@
-﻿
+
 namespace Steam_Auto_Shutdown
 {
     partial class MainForm
@@ -54,6 +54,7 @@ namespace Steam_Auto_Shutdown
             this.materialLabel7 = new ReaLTaiizor.Controls.MaterialLabel();
             this.materialLabel8 = new ReaLTaiizor.Controls.MaterialLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.hibernateCheckBox = new ReaLTaiizor.Controls.MaterialCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,7 +114,7 @@ namespace Steam_Auto_Shutdown
             this.toggleStatusLabel.AutoSize = true;
             this.toggleStatusLabel.Depth = 0;
             this.toggleStatusLabel.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.toggleStatusLabel.Location = new System.Drawing.Point(284, 122);
+            this.toggleStatusLabel.Location = new System.Drawing.Point(279, 150);
             this.toggleStatusLabel.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.toggleStatusLabel.Name = "toggleStatusLabel";
             this.toggleStatusLabel.Size = new System.Drawing.Size(30, 19);
@@ -125,7 +126,7 @@ namespace Steam_Auto_Shutdown
             this.materialLabel2.AutoSize = true;
             this.materialLabel2.Depth = 0;
             this.materialLabel2.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialLabel2.Location = new System.Drawing.Point(33, 122);
+            this.materialLabel2.Location = new System.Drawing.Point(28, 150);
             this.materialLabel2.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.materialLabel2.Name = "materialLabel2";
             this.materialLabel2.Size = new System.Drawing.Size(245, 19);
@@ -166,6 +167,7 @@ namespace Steam_Auto_Shutdown
             this.diskDetectionCheckbox.TabIndex = 12;
             this.diskDetectionCheckbox.Text = "Use Disk Detection";
             this.diskDetectionCheckbox.UseVisualStyleBackColor = true;
+            this.diskDetectionCheckbox.CheckedChanged += new System.EventHandler(this.diskDetectionCheckbox_CheckedChanged);
             // 
             // shutdownAfterDropdown
             // 
@@ -186,7 +188,7 @@ namespace Steam_Auto_Shutdown
             "30 seconds",
             "1 minute",
             "5 minutes"});
-            this.shutdownAfterDropdown.Location = new System.Drawing.Point(31, 171);
+            this.shutdownAfterDropdown.Location = new System.Drawing.Point(31, 208);
             this.shutdownAfterDropdown.MaxDropDownItems = 4;
             this.shutdownAfterDropdown.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;
             this.shutdownAfterDropdown.Name = "shutdownAfterDropdown";
@@ -202,12 +204,13 @@ namespace Steam_Auto_Shutdown
             this.materialLabel1.Depth = 0;
             this.materialLabel1.Font = new System.Drawing.Font("Roboto", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.materialLabel1.FontType = ReaLTaiizor.Util.MaterialManager.FontType.Body2;
-            this.materialLabel1.Location = new System.Drawing.Point(33, 151);
+            this.materialLabel1.Location = new System.Drawing.Point(28, 188);
             this.materialLabel1.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.materialLabel1.Name = "materialLabel1";
             this.materialLabel1.Size = new System.Drawing.Size(98, 17);
             this.materialLabel1.TabIndex = 22;
             this.materialLabel1.Text = "Shutdown after";
+            this.materialLabel1.Click += new System.EventHandler(this.materialLabel1_Click);
             // 
             // materialLabel3
             // 
@@ -215,7 +218,7 @@ namespace Steam_Auto_Shutdown
             this.materialLabel3.Depth = 0;
             this.materialLabel3.Font = new System.Drawing.Font("Roboto", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.materialLabel3.FontType = ReaLTaiizor.Util.MaterialManager.FontType.Body2;
-            this.materialLabel3.Location = new System.Drawing.Point(223, 150);
+            this.materialLabel3.Location = new System.Drawing.Point(217, 188);
             this.materialLabel3.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.materialLabel3.Name = "materialLabel3";
             this.materialLabel3.Size = new System.Drawing.Size(101, 17);
@@ -245,7 +248,7 @@ namespace Steam_Auto_Shutdown
             "600 KB/s",
             "800 KB/s",
             "1 MB/s"});
-            this.speedTresholdDropdown.Location = new System.Drawing.Point(226, 171);
+            this.speedTresholdDropdown.Location = new System.Drawing.Point(220, 208);
             this.speedTresholdDropdown.MaxDropDownItems = 4;
             this.speedTresholdDropdown.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;
             this.speedTresholdDropdown.Name = "speedTresholdDropdown";
@@ -261,7 +264,7 @@ namespace Steam_Auto_Shutdown
             this.materialLabel4.Depth = 0;
             this.materialLabel4.Font = new System.Drawing.Font("Roboto", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.materialLabel4.FontType = ReaLTaiizor.Util.MaterialManager.FontType.Body2;
-            this.materialLabel4.Location = new System.Drawing.Point(420, 150);
+            this.materialLabel4.Location = new System.Drawing.Point(416, 188);
             this.materialLabel4.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.materialLabel4.Name = "materialLabel4";
             this.materialLabel4.Size = new System.Drawing.Size(85, 17);
@@ -287,7 +290,7 @@ namespace Steam_Auto_Shutdown
             "5 seconds",
             "10 seconds",
             "30 seconds"});
-            this.idleTresholdDropdown.Location = new System.Drawing.Point(423, 171);
+            this.idleTresholdDropdown.Location = new System.Drawing.Point(419, 208);
             this.idleTresholdDropdown.MaxDropDownItems = 4;
             this.idleTresholdDropdown.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.OUT;
             this.idleTresholdDropdown.Name = "idleTresholdDropdown";
@@ -376,7 +379,7 @@ namespace Steam_Auto_Shutdown
             this.materialLabel6.Depth = 0;
             this.materialLabel6.Font = new System.Drawing.Font("Roboto", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.materialLabel6.FontType = ReaLTaiizor.Util.MaterialManager.FontType.Overline;
-            this.materialLabel6.Location = new System.Drawing.Point(33, 218);
+            this.materialLabel6.Location = new System.Drawing.Point(28, 246);
             this.materialLabel6.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.materialLabel6.Name = "materialLabel6";
             this.materialLabel6.Size = new System.Drawing.Size(113, 13);
@@ -391,7 +394,7 @@ namespace Steam_Auto_Shutdown
             this.materialLabel7.Depth = 0;
             this.materialLabel7.Font = new System.Drawing.Font("Roboto", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.materialLabel7.FontType = ReaLTaiizor.Util.MaterialManager.FontType.Overline;
-            this.materialLabel7.Location = new System.Drawing.Point(481, 218);
+            this.materialLabel7.Location = new System.Drawing.Point(481, 246);
             this.materialLabel7.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
             this.materialLabel7.Name = "materialLabel7";
             this.materialLabel7.Size = new System.Drawing.Size(103, 13);
@@ -411,7 +414,7 @@ namespace Steam_Auto_Shutdown
             this.materialLabel8.Name = "materialLabel8";
             this.materialLabel8.Size = new System.Drawing.Size(21, 13);
             this.materialLabel8.TabIndex = 34;
-            this.materialLabel8.Text = "v5.0";
+            this.materialLabel8.Text = "v6.0";
             this.materialLabel8.Click += new System.EventHandler(this.materialLabel8_Click);
             // 
             // pictureBox1
@@ -424,11 +427,28 @@ namespace Steam_Auto_Shutdown
             this.pictureBox1.TabIndex = 30;
             this.pictureBox1.TabStop = false;
             // 
+            // hibernateCheckBox
+            // 
+            this.hibernateCheckBox.AutoSize = true;
+            this.hibernateCheckBox.Depth = 0;
+            this.hibernateCheckBox.Location = new System.Drawing.Point(207, 113);
+            this.hibernateCheckBox.Margin = new System.Windows.Forms.Padding(0);
+            this.hibernateCheckBox.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.hibernateCheckBox.MouseState = ReaLTaiizor.Helper.MaterialDrawHelper.MaterialMouseState.HOVER;
+            this.hibernateCheckBox.Name = "hibernateCheckBox";
+            this.hibernateCheckBox.Ripple = true;
+            this.hibernateCheckBox.Size = new System.Drawing.Size(103, 37);
+            this.hibernateCheckBox.TabIndex = 36;
+            this.hibernateCheckBox.Text = "Hibernate";
+            this.hibernateCheckBox.UseVisualStyleBackColor = true;
+            this.hibernateCheckBox.CheckedChanged += new System.EventHandler(this.hibernateCheckBox_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 238);
+            this.ClientSize = new System.Drawing.Size(615, 268);
+            this.Controls.Add(this.hibernateCheckBox);
             this.Controls.Add(this.materialLabel8);
             this.Controls.Add(this.materialLabel7);
             this.Controls.Add(this.materialLabel6);
@@ -455,7 +475,7 @@ namespace Steam_Auto_Shutdown
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form1";
+            this.Text = "Steam Auto Shutdown";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseUp);
@@ -491,5 +511,6 @@ namespace Steam_Auto_Shutdown
         private ReaLTaiizor.Controls.MaterialLabel materialLabel6;
         private ReaLTaiizor.Controls.MaterialLabel materialLabel7;
         private ReaLTaiizor.Controls.MaterialLabel materialLabel8;
+        private ReaLTaiizor.Controls.MaterialCheckBox hibernateCheckBox;
     }
 }
