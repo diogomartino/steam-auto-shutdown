@@ -40,9 +40,10 @@ namespace Steam_Auto_Shutdown
 
         public MainForm()
         {
+            HandleCreated += MainForm_HandleCreated;
+
             InitializeComponent();
             LoadApp();
-            this.HandleCreated += MainForm_HandleCreated;
         }
 
         private void LoadApp()
@@ -289,13 +290,14 @@ namespace Steam_Auto_Shutdown
                 cmd.StartInfo.UseShellExecute = false;
                 cmd.Start();
 
-                cmd.StandardInput.WriteLine("powercfg –availablesleepstates");
+                cmd.StandardInput.WriteLine("cmd /c powercfg /availablesleepstates");
                 cmd.StandardInput.Flush();
                 cmd.StandardInput.Close();
                 cmd.WaitForExit();
 
                 string output = cmd.StandardOutput.ReadToEnd();
                 string[] outputLines = output.Split('\n');
+
                 List<string> powerModes = new List<string>();
                 for (int i = 0; i < outputLines.Length; i++)
                 {
@@ -475,7 +477,7 @@ namespace Steam_Auto_Shutdown
         private void MainForm_HandleCreated(object sender, EventArgs e)
         {
             isHibernateEnabled = HibernateStatus();
-            if (isHibernateEnabled)
+            if (!isHibernateEnabled)
             {
                 hibernateCheckBox.Hide();
             }
