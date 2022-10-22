@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,6 +30,7 @@ namespace Steam_Auto_Shutdown
 
         private string networkCardName = string.Empty;
         private bool isSteamUsingDisk = false;
+        private bool isHibernateEnabled = false;
         private bool monitoringStatus = false;
         private bool messageShown = false;
 
@@ -41,6 +42,7 @@ namespace Steam_Auto_Shutdown
         {
             InitializeComponent();
             LoadApp();
+            this.HandleCreated += MainForm_HandleCreated;
         }
 
         private void LoadApp()
@@ -223,24 +225,103 @@ namespace Steam_Auto_Shutdown
             }
         }
 
-        private static void Shutdown()
+        private void Shutdown()
         {
             try
             {
-                Process.Start("shutdown", "/s /t 15");
-
-                DialogResult result = MessageBox.Show("Your computer is shutting down in 15 seconds! Do you want to CANCEL the shutdown? Press YES to ABORT THE SHUTDOWN. Press NO to SHUTDOWN IMEDIATELY.", "Confirm", MessageBoxButtons.YesNo);
-
-                if (result == DialogResult.Yes)
+                if (!!hibernateCheckBox.Checked)
                 {
-                    Process.Start("shutdown", "/a");
+                    bool cancelled = false;
+
+                    DialogResult result = MessageBox.Show("Your computer is hibernating in 15 seconds! Do you want to CANCEL the hibernation? Press YES to ABORT THE HIBERNATION. Press NO to HIBERNATE IMEDIATELY.", "Confirm", MessageBoxButtons.YesNo);
+
+                    Task.Delay(new TimeSpan(0, 0, 15)).ContinueWith((task) => {
+                        if (cancelled)
+                        {
+                            return;
+                        }
+
+                        Application.SetSuspendState(PowerState.Hibernate, true, true);
+                    });
+
+                    if (result == DialogResult.Yes)
+                    {
+                        cancelled = true;
+                    }
+                    else
+                    {
+                        if (cancelled)
+                        {
+                            return;
+                        }
+                        cancelled = true;
+                        Application.SetSuspendState(PowerState.Hibernate, true, true);
+                    }
                 }
                 else
                 {
-                    Process.Start("shutdown", "/s");
+                    Process.Start("shutdown", "/s /t 15");
+
+                    DialogResult result = MessageBox.Show("Your computer is shutting down in 15 seconds! Do you want to CANCEL the shutdown? Press YES to ABORT THE SHUTDOWN. Press NO to SHUTDOWN IMEDIATELY.", "Confirm", MessageBoxButtons.YesNo);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        Process.Start("shutdown", "/a");
+                    }
+                    else
+                    {
+                        Process.Start("shutdown", "/s");
+                    }
                 }
             }
             catch { }
+        }
+
+        private bool HibernateStatus()
+        {
+            try
+            {
+                Process cmd = new Process();
+                cmd.StartInfo.FileName = "cmd.exe";
+                cmd.StartInfo.RedirectStandardInput = true;
+                cmd.StartInfo.RedirectStandardOutput = true;
+                cmd.StartInfo.CreateNoWindow = true;
+                cmd.StartInfo.UseShellExecute = false;
+                cmd.Start();
+
+                cmd.StandardInput.WriteLine("powercfg –availablesleepstates");
+                cmd.StandardInput.Flush();
+                cmd.StandardInput.Close();
+                cmd.WaitForExit();
+
+                string output = cmd.StandardOutput.ReadToEnd();
+                string[] outputLines = output.Split('\n');
+                List<string> powerModes = new List<string>();
+                for (int i = 0; i < outputLines.Length; i++)
+                {
+                    string line = outputLines[i].Trim();
+                    if (line == "The following sleep states are available on this system:")
+                    {
+                        continue;
+                    }
+                    if (line == "The following sleep states are not available on this system:")
+                    {
+                        break;
+                    }
+                    powerModes.Add(line);
+                }
+
+                if (Array.FindIndex(powerModes.ToArray(), x => x == "Hibernate") > -1)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void ToggleStatus()
@@ -391,6 +472,14 @@ namespace Steam_Auto_Shutdown
                 }
             }
         }
+        private void MainForm_HandleCreated(object sender, EventArgs e)
+        {
+            isHibernateEnabled = HibernateStatus();
+            if (isHibernateEnabled)
+            {
+                hibernateCheckBox.Hide();
+            }
+        }
 
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -418,6 +507,21 @@ namespace Steam_Auto_Shutdown
         private void materialLabel8_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/bruxo00/steam-auto-shutdown");
+        }
+
+        private void materialLabel1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void hibernateCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void diskDetectionCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
