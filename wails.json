@@ -11,5 +11,12 @@
   "author": {
     "name": "Diogo Martino",
     "email": "diogo.martino10@gmail.com"
+  },
+  "info": {
+    "companyName": "DiogoMartino",
+    "productName": "Steam Auto Shutdown",
+    "productVersion": "6.0.0",
+    "copyright": "2023",
+    "comments": "https://github.com/diogomartino/steam-auto-shutdown"
   }
 }
