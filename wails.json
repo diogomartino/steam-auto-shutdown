@@ -1,0 +1,15 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "Steam Auto Shutdown",
+  "outputfilename": "Steam Auto Shutdown",
+  "assetdir": "frontend/dist",
+  "wailsjsdir": "frontend/src",
+  "frontend:install": "pnpm install",
+  "frontend:build": "pnpm build",
+  "frontend:dev:watcher": "pnpm dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "Diogo Martino",
+    "email": "diogo.martino10@gmail.com"
+  }
+}
