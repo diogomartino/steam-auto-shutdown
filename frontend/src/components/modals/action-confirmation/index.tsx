@@ -7,7 +7,6 @@ import {
   ModalHeader
 } from '@nextui-org/react';
 import { closeModals } from '../../../actions/modal';
-import { useModalContentClassName } from '../../../hooks/use-theme';
 import useSettings from '../../../hooks/use-settings';
 import { ActionType } from '../../../types';
 import { DesktopApi } from '../../../desktop';
@@ -21,13 +20,11 @@ const messageMap = {
 };
 
 const ActionConfirmationModal = () => {
-  const contentClassName = useModalContentClassName();
   const { isModalOpen } = useModalsInfo();
   const settings = useSettings();
 
   const onCancelClick = async () => {
     await DesktopApi.cancelShutdown();
-
     closeModals();
   };
 
@@ -38,7 +35,7 @@ const ActionConfirmationModal = () => {
       onClose={closeModals}
       scrollBehavior="inside"
     >
-      <ModalContent className={contentClassName}>
+      <ModalContent>
         <ModalHeader className="flex gap-1 items-center"></ModalHeader>
         <ModalBody>
           <div className="flex full-w justify-center items-center">

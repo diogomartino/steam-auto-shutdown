@@ -17,13 +17,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { TProcess } from '../../../types';
 import { setTargetProcess } from '../../../actions/app';
 import { IconSearch } from '@tabler/icons-react';
-import { useModalContentClassName } from '../../../hooks/use-theme';
 import { Modal as ModalList } from '../../../types';
 import useModalsInfo from '../../../hooks/use-modals-info';
 import useTargetProcess from '../../../hooks/use-target-process';
 
 const ProcessPicker = () => {
-  const contentClassName = useModalContentClassName();
   const { isModalOpen } = useModalsInfo();
   const targetProcess = useTargetProcess();
   const [processes, setProcesses] = useState<any[]>([]);
@@ -65,7 +63,7 @@ const ProcessPicker = () => {
       }}
       scrollBehavior="inside"
     >
-      <ModalContent className={contentClassName}>
+      <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-3">
