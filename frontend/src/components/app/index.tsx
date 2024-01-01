@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
-import Routing from '../routing';
 import { getSteamProcess, loadInterfaces } from '../../actions/app';
 import useTheme from '../../hooks/use-theme';
 import useSystemMetrics from '../../hooks/use-system-metrics';
 import useSystemMonitor from '../../hooks/use-system-monitor';
+import Home from '../../screens/home';
 
 const App = () => {
   const inited = useRef<boolean>(false);
@@ -22,7 +22,7 @@ const App = () => {
     initApp();
   }, []);
 
-  return <Routing />;
+  return <Home />;
 };
 
 export default App;

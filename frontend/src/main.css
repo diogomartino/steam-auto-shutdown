@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 html,
-body {
+body,
+[data-overlay-container='true'] {
   height: 100%;
 }
 
-#root,
-main {
+#root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;

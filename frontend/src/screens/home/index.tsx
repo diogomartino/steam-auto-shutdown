@@ -15,14 +15,12 @@ const Home = () => {
   };
 
   return (
-    <>
+    <div className=" flex flex-col justify-center items-center h-full">
       <TopRightSlot />
       <Header />
       <div className="flex flex-col justify-center items-center h-full gap-3">
         <MonitorSwitch isActive={isMonitoring} setIsActive={onToggleClick} />
-
         <Divider className="my-4 w-1/4" />
-
         <div className="flex justify-between w-full">
           <div className="flex justify-center w-full">
             <InterfacePicker />
@@ -30,7 +28,7 @@ const Home = () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
