@@ -6,6 +6,8 @@ This is a Windows application that will automatically shutdown your computer whe
 
 You can download the latest version from the [releases page](https://github.com/diogomartino/steam-auto-shutdown/releases).
 
+[WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) is required. You most likely already have it installed, so you don't need to worry.
+
 ## Instructions
 
 1. Open the application

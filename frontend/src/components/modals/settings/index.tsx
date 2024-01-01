@@ -15,7 +15,6 @@ import {
 } from '@nextui-org/react';
 import { closeModals } from '../../../actions/modal';
 import DiskMonitor from '../../disk-monitor';
-import { useModalContentClassName } from '../../../hooks/use-theme';
 import useSettings from '../../../hooks/use-settings';
 import { setSettings } from '../../../actions/app';
 import { ActionType } from '../../../types';
@@ -24,7 +23,6 @@ import { IconInfoCircle } from '@tabler/icons-react';
 import useModalsInfo from '../../../hooks/use-modals-info';
 
 const SettingsModal = () => {
-  const contentClassName = useModalContentClassName();
   const { isModalOpen } = useModalsInfo();
   const { speedThreshold, actionDelay, actionType, diskActivityMonitor } =
     useSettings();
@@ -59,7 +57,7 @@ const SettingsModal = () => {
       onClose={closeModals}
       scrollBehavior="inside"
     >
-      <ModalContent className={contentClassName}>
+      <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex gap-1 items-center">
