@@ -9,7 +9,16 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          [{ name: wailsTest, platform: windows/amd64, os: windows-latest }]
+          [
+            {
+              name: SteamAutoShutdown,
+              platform: windows/amd64,
+              os: windows-latest,
+              nsis: false,
+              node-version: 20.10.0,
+              package: true,
+            },
+          ]
     runs-on: ${{ matrix.build.os }}
     steps:
       - uses: actions/checkout@v2
@@ -29,3 +38,5 @@ jobs:
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
+          nsis: ${{ matrix.build.nsis }}
+          package: ${{ matrix.build.package }}
