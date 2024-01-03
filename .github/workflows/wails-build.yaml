@@ -20,6 +20,8 @@ jobs:
             },
           ]
     runs-on: ${{ matrix.build.os }}
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -42,6 +44,7 @@ jobs:
           package: ${{ matrix.build.package }}
 
       - name: Extract Version
+        id: extract_version
         run: |
           version=$(jq -r '.info.productVersion' ./wails.json)
           echo "Version extracted from wails.json: $version"
@@ -62,7 +65,8 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
+          # Hardcoded file name because ¯\_(ツ)_/¯
           files: |
-            Wails Build ${{ matrix.build.os }} ${{ inputs.build-name }}
+            Wails Build Windows SteamAutoShutdown.exe
           tag_name: v${{ needs.build.outputs.version }}
           title: Release v${{ needs.build.outputs.version }}
