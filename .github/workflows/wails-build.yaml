@@ -32,7 +32,31 @@ jobs:
         run: |
           version=$(jq -r '.info.productVersion' ./wails.json)
           echo "Version extracted from wails.json: $version"
-          echo "BUILD_VERSION=$version" >> "$GITHUB_OUTPUT"
+          echo "CURRENT_VERSION=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Bump Version
+        id: bump_version
+        shell: bash
+        run: |
+          IFS='.' read -ra version_parts <<< "${{ steps.extract_version.outputs.CURRENT_VERSION }}"
+          major="${version_parts[0]}"
+          minor="${version_parts[1]}"
+          patch="${version_parts[2]}"
+
+          patch=$((patch + 1))
+
+          new_version="$major.$minor.$patch"
+          echo "Bumped version to: $new_version"
+          echo "BUILD_VERSION=$new_version" >> "$GITHUB_OUTPUT"
+
+          jq --arg new_version "$new_version" '.info.productVersion = $new_version' ./wails.json > temp_wails.json
+          mv temp_wails.json ./wails.json
+
+      - name: Commit and Push bump
+        run: |
+          git add wails.json
+          git commit -m "Bump version to $new_version"
+          git push
 
       - name: Setup GoLang
         uses: actions/setup-go@v4
@@ -60,5 +84,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ./build/bin/SteamAutoShutdown.exe
-          tag_name: v${{ steps.extract_version.outputs.BUILD_VERSION }}
-          name: Release v${{ steps.extract_version.outputs.BUILD_VERSION }}
+          tag_name: v${{ steps.bump_version.outputs.BUILD_VERSION }}
+          name: Release v${{ steps.bump_version.outputs.BUILD_VERSION }}
