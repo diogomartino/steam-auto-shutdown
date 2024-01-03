@@ -69,4 +69,3 @@ jobs:
           files: |
             Wails Build Windows SteamAutoShutdown.exe
           tag_name: v${{ needs.build.outputs.version }}
-          title: Release v${{ needs.build.outputs.version }}
