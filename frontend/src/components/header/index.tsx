@@ -9,7 +9,7 @@ const Header = () => {
       <div>
         <p className="text-3xl">STEAM AUTO SHUTDOWN</p>
         <div className="flex gap-2">
-          <p className="text-xs text-gray-500">Version 6.0.1</p>
+          <p className="text-xs text-gray-500">Version {APP_VERSION}</p>
           <Link
             href="#"
             className="text-xs text-gray-500"

@@ -2,7 +2,7 @@
   "name": "steam-auto-shutdown",
   "private": true,
   "type": "module",
-  "version": "6.0.1",
+  "version": "0.0.0",
   "dependencies": {
     "@nextui-org/react": "^2.2.1",
     "@reduxjs/toolkit": "^1.9.7",
