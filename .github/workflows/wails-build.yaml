@@ -61,3 +61,4 @@ jobs:
         with:
           files: ./build/bin/SteamAutoShutdown.exe
           tag_name: v${{ needs.build.outputs.version }}
+          name: Release v${{ needs.build.outputs.version }}
