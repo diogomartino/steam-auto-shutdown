@@ -41,7 +41,7 @@ jobs:
           go-version: 1.21.3
 
       - name: Install Wails
-        run: go install github.com/wailsapp/wails/v2/cmd/wails@2.6.0
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.6.0
         shell: bash
 
       - name: Build Windows App
