@@ -32,7 +32,7 @@ jobs:
         run: |
           version=$(jq -r '.info.productVersion' ./wails.json)
           echo "Version extracted from wails.json: $version"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "BUILD_VERSION=$version" >> "$GITHUB_OUTPUT"
 
       - name: Setup GoLang
         uses: actions/setup-go@v4
@@ -60,5 +60,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ./build/bin/SteamAutoShutdown.exe
-          tag_name: v${{ needs.build.outputs.version }}
-          name: Release v${{ needs.build.outputs.version }}
+          tag_name: v${{ steps.extract_version.outputs.BUILD_VERSION }}
+          name: Release v${{ steps.extract_version.outputs.BUILD_VERSION }}
