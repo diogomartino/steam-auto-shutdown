@@ -1,27 +1,4 @@
 name: Wails build
-description: Builds the app and creates a release
-
-inputs:
-  wails-version:
-    description: The version of Wails to use
-    required: true
-    default: "2.6.0"
-  node-version:
-    description: The version of Node.js to use
-    required: true
-    default: "20.10.0"
-  go-version:
-    description: The version of Go to use
-    required: true
-    default: "1.21.3"
-  artifact-name:
-    description: The name of the artifact to upload
-    required: true
-    default: "Steam Auto Shutdown.exe"
-  build-output-name:
-    description: The name of the output file
-    required: true
-    default: "SteamAutoShutdown.exe"
 
 on:
   workflow_dispatch:
@@ -41,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: 20.10.0
 
       - name: Set up Git
         run: git config --global user.email "actions@github.com" && git config --global user.name "GitHub Actions"
@@ -61,21 +38,21 @@ jobs:
         uses: actions/setup-go@v4
         with:
           check-latest: true
-          go-version: ${{ inputs.go-version }}
+          go-version: 1.21.3
 
       - name: Install Wails
-        run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@2.6.0
         shell: bash
 
       - name: Build Windows App
         working-directory: .
-        run: wails build --clean --platform windows/amd64 -o ${{ inputs.build-output-name }}
+        run: wails build --clean --platform windows/amd64 -o SteamAutoShutdown.exe
         shell: bash
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.artifact-name }}
+          name: Steam Auto Shutdown.exe
           path: ./build/bin/SteamAutoShutdown.exe
 
       - name: Create Release
