@@ -56,7 +56,7 @@ jobs:
       - name: Commit and Push bump
         run: |
           git add wails.json
-          git commit -m "Bump version to $new_version"
+          git commit -m "Bump version to v${{ steps.bump_version.outputs.BUILD_VERSION }}"
           git push
 
       - name: Setup GoLang
@@ -87,3 +87,6 @@ jobs:
           files: ./build/bin/SteamAutoShutdown.exe
           tag_name: v${{ steps.bump_version.outputs.BUILD_VERSION }}
           name: Release v${{ steps.bump_version.outputs.BUILD_VERSION }}
+          body: |
+            ## Changelog
+            No changelog available yet.
